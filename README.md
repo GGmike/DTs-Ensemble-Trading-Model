@@ -47,9 +47,8 @@ pip install pandas numpy scikit-learn matplotlib plotly yfinance
 
 2. **Run the Script:**  
    ```bash
-   python <your_script_name>.py
+   python main.py
    ```
-   Replace `<your_script_name>.py` with the filename containing the provided code.
 
 3. **Output:**  
    - Prints evaluation metrics for the strategy and buy-and-hold.
