@@ -1,5 +1,3 @@
-import pandas as pd
-import numpy as np
 
 
 def backtesting(df, initial_cap = 10000, reinvest = True, stop = False ,stop_loss = -0.05):
