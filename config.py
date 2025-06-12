@@ -27,7 +27,7 @@ config = {
     'cloud_span_b': 52,
     'cloud_lagging': 26,
     'daily_period': 200,
-    'threshold': 0.6,
+    'threshold': 0.35,
     'lag_day' : -1,
     'active_stop_loss': False,
       'stop_loss' : -0.05,
