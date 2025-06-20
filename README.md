@@ -1,4 +1,4 @@
-# Stock Trading Strategy Backtester
+# Algorithmic Trading System Development based on Stacking Ensemble Learning
 
 This project implements a machine learning-based backtesting framework for stock trading strategies using technical indicators and ensemble decision trees. The code leverages historical market data to build, evaluate, and visualize trading strategies, comparing model-based signals with a simple buy-and-hold approach.
 
