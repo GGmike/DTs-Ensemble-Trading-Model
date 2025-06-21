@@ -14,10 +14,10 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, f1_score, recall_score, precision_score
 from config import config
-from backtest import backtesting
-from calculation import ck_dup_list, cal_nCr, cal_fact
-from indicators import ichimoku_cloud, vwap, rsi, macd
-
+from subFunction.backtest import backtesting
+from subFunction.calculation import ck_dup_list, cal_nCr, cal_fact
+from subFunction.indicators import ichimoku_cloud, vwap, rsi, macd
+from subFunction.uniqueDT import uniqueDT
 
 def main():
   #Data Fetching
@@ -138,40 +138,43 @@ def main():
 
   X_train, X_test, y_train, y_test = train_test_split(X, y,test_size=0.2,shuffle = False) #random_state= SEED)#shuffle = False)
 
-  if len(used_columns) == 0:
+  base_learners, used_columns = uniqueDT(cluster1_column,cal_nCr(len(cluster1_column),num_of_nodes) , num_of_nodes, X_train,y_train)
 
-    base_learners = []
-    used_columns = []
-    dup = False
+##old approach
+  # if len(used_columns) == 0:
 
-    loop = 500
-    # print(f"Total distinct decision trees: {loop}")
-    success = 0
+  #   base_learners = []
+  #   used_columns = []
+  #   dup = False
 
-
-    sample_df = cluster1_df
-
-
-    while success < loop:
-      dup = False
-      training_columns = random.sample(list(sample_df.columns), num_of_nodes)
-
-      for used_col in used_columns:
-        if ck_dup_list(training_columns,used_col) == True:
-          dup = True
-          break
-      if dup == False:
-        success += 1
-        X_sample = X_train[training_columns]
-        y_sample = y_train
+  #   loop = 500
+  #   # print(f"Total distinct decision trees: {loop}")
+  #   success = 0
 
 
-        dt = DecisionTreeClassifier(max_depth=config['max_depth'])
-        dt.fit(X_sample, y_sample)
-        #print('no dup: ')
-        base_learners.append(dt)
-        used_columns.append(training_columns)
-        # print(success)
+  #   sample_df = cluster1_df
+
+
+  #   while success < loop:
+  #     dup = False
+  #     training_columns = random.sample(list(sample_df.columns), num_of_nodes)
+
+  #     for used_col in used_columns:
+  #       if ck_dup_list(training_columns,used_col) == True:
+  #         dup = True
+  #         break
+  #     if dup == False:
+  #       success += 1
+  #       X_sample = X_train[training_columns]
+  #       y_sample = y_train
+
+
+  #       dt = DecisionTreeClassifier(max_depth=config['max_depth'])
+  #       dt.fit(X_sample, y_sample)
+  #       #print('no dup: ')
+  #       base_learners.append(dt)
+  #       used_columns.append(training_columns)
+  #       # print(success)
 
   # print('Trees Building Over')
   # print('Running Prediction')
