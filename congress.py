@@ -1,4 +1,4 @@
-from main import main
+from subFunction.main import main
 from config import config
 import argparse
 

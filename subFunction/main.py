@@ -14,10 +14,10 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, f1_score, recall_score, precision_score
 from config import config
-from backtest import backtesting
-from calculation import ck_dup_list, cal_nCr, cal_fact
-from indicators import ichimoku_cloud, vwap, rsi, macd
-from uniqueDT import uniqueDT
+from subFunction.backtest import backtesting
+from subFunction.calculation import ck_dup_list, cal_nCr, cal_fact
+from subFunction.indicators import ichimoku_cloud, vwap, rsi, macd
+from subFunction.uniqueDT import uniqueDT
 
 def main():
   #Data Fetching
