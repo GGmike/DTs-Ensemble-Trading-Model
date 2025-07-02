@@ -2,6 +2,7 @@ from subFunction.main import main
 from config import config
 import argparse
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Process config parameter.')
 
