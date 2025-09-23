@@ -47,7 +47,7 @@ pip install pandas numpy scikit-learn matplotlib plotly yfinance
 
 2. **Run the Script:**  
    ```bash
-   python congress.py
+   python congress.py -h
    ```
 
 3. **Output:**  
