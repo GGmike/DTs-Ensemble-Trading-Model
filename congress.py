@@ -1,5 +1,6 @@
 from subFunction.main import main
 from config import config
+from BinanceDataSrc.binanceRESTAPi import get_historical_data
 import argparse
 
 
@@ -21,3 +22,12 @@ if __name__ == "__main__":
 
     
     main()
+
+    print("Testing new Binance Data Source")
+    df = get_historical_data('SOLUSDT','5m')
+    if df is not None:
+        print(df.head())
+        print(df.tail())
+        print(f"Dataframe shape: {df.shape}")
+    else:   
+        print("Failed to retrieve data.")
