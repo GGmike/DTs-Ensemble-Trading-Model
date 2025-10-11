@@ -6,7 +6,7 @@ config = {
     'rf_depth': 3,
     'rf_n_est': 10000,
     'symbol' : "TSLA",
-    'start' : datetime.datetime.today().replace(hour=0,minute=0,second =0, microsecond =0)- datetime.timedelta(days=729),
+    'start' : datetime.datetime.today().replace(hour=0,minute=0,second =0, microsecond =0)- datetime.timedelta(days=59),
     'end' : datetime.datetime.today().replace(hour=0,minute=0,second =0, microsecond =0),
     'period' : "1D",
     'sma1' : 3,
