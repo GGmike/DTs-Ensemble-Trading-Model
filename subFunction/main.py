@@ -5,7 +5,6 @@ import numpy as np
 from sklearn import tree
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
-import yfinance as yf
 import datetime
 import time
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
@@ -14,6 +13,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, f1_score, recall_score, precision_score
 from config import config
+from BinanceDataSrc.binanceRESTAPi import get_historical_data
 from subFunction.backtest import backtesting
 from subFunction.calculation import ck_dup_list, cal_nCr, cal_fact
 from subFunction.indicators import ichimoku_cloud, vwap, rsi, macd
@@ -21,9 +21,10 @@ from subFunction.uniqueDT import uniqueDT
 
 def main():
   #Data Fetching
-  dataset = yf.download(config['symbol'],config['start'],config['end'],interval = config['period'])
+#   dataset = yf.download(config['symbol'],config['start'],config['end'],interval = config['period'])
 
-  dataset['Close'].reindex(dataset.index)
+  dataset = get_historical_data(config['symbol'],config['period'])
+#   dataset['Close'].reindex(dataset.index)
 
 
 
@@ -37,9 +38,9 @@ def main():
   dataset['EMA2'] = dataset['Close'].ewm(span = config['ema2']).mean().fillna(0)
   dataset['EMA3'] = dataset['Close'].ewm(span = config['ema3']).mean().fillna(0)
 
-  dataset['EMA1>Close'] = np.where(dataset.EMA1 > dataset.Close[config['symbol']],1,0)
-  dataset['EMA2>Close'] = np.where(dataset.EMA2 > dataset.Close[config['symbol']],1,0)
-  dataset['EMA3>Close'] = np.where(dataset.EMA3 > dataset.Close[config['symbol']],1,0)
+  dataset['EMA1>Close'] = np.where(dataset.EMA1 > dataset.Close,1,0)
+  dataset['EMA2>Close'] = np.where(dataset.EMA2 > dataset.Close,1,0)
+  dataset['EMA3>Close'] = np.where(dataset.EMA3 > dataset.Close,1,0)
 
   # dataset['EMA1>EMA2'] = np.where(dataset.EMA1 > dataset.EMA2 ,1,0)
   # dataset['EMA1>EMA3'] = np.where(dataset.EMA1 > dataset.EMA3 ,1,0)
@@ -54,9 +55,9 @@ def main():
   dataset['SMA2'] = dataset['Close'].rolling(window = config['sma2']).mean().fillna(0)
   dataset['SMA3'] = dataset['Close'].rolling(window = config['sma3']).mean().fillna(0)
 
-  dataset['SMA1>Close'] = np.where(dataset.SMA1 > dataset.Close[config['symbol']],1,0)
-  dataset['SMA2>Close'] = np.where(dataset.SMA2 > dataset.Close[config['symbol']],1,0)
-  dataset['SMA3>Close'] = np.where(dataset.SMA3 > dataset.Close[config['symbol']],1,0)
+  dataset['SMA1>Close'] = np.where(dataset.SMA1 > dataset.Close,1,0)
+  dataset['SMA2>Close'] = np.where(dataset.SMA2 > dataset.Close,1,0)
+  dataset['SMA3>Close'] = np.where(dataset.SMA3 > dataset.Close,1,0)
 
   # dataset['SMA1>SMA2>SMA3'] = np.where(dataset.SMA1 > dataset.SMA2 & dataset.SMA2 > dataset.SMA3,1,0)
   dataset['SMA1>SMA2>SMA3'] = np.where( (dataset.SMA1 > dataset.SMA2) & (dataset.SMA2 > dataset.SMA3) , 1, 0)
@@ -67,7 +68,7 @@ def main():
 
   dataset['VWAP'] = vwap(dataset, config['vwap'])
   dataset['Vol_SMA'] = dataset['Volume'].rolling(window = config['vol_sma']).mean().fillna(0)
-  dataset['Vol_SMA>Vol'] = np.where(dataset.Vol_SMA > dataset.Volume[config['symbol']], 1 , 0)
+  dataset['Vol_SMA>Vol'] = np.where(dataset.Vol_SMA > dataset.Volume, 1 , 0)
 
   #max vwap
 
@@ -80,9 +81,9 @@ def main():
 
   dataset['conver>base'] = np.where(dataset.Conver_line > dataset.Base_line, 1, 0)
   # dataset['lagging>Close'] = np.where(dataset.lagging > dataset.Close, 1, 0 )
-  dataset['lagging>Close'] = np.where(dataset.lagging > dataset.Close[config['symbol']].shift(config['cloud_lagging']), 1, 0 )
-  dataset['Close>spanA'] = np.where(dataset.Close[config['symbol']] > dataset.Span_a, 1, 0)
-  dataset['Close>spanB'] = np.where(dataset.Close[config['symbol']] > dataset.Span_b, 1, 0)
+  dataset['lagging>Close'] = np.where(dataset.lagging > dataset.Close.shift(config['cloud_lagging']), 1, 0 )
+  dataset['Close>spanA'] = np.where(dataset.Close > dataset.Span_a, 1, 0)
+  dataset['Close>spanB'] = np.where(dataset.Close > dataset.Span_b, 1, 0)
   dataset['Cloud_A>Cloud_B'] = np.where(dataset.leading_span_a > dataset.leading_span_b, 1, 0)
 
   #max cloud
@@ -217,7 +218,8 @@ def main():
 
 
 
-  test_df = yf.download(config['symbol'],config['start'],config['end'],interval = config['period'])
+#   test_df = yf.download(config['symbol'],config['start'],config['end'],interval = config['period'])
+  test_df = get_historical_data(config['symbol'],config['period'])
   BT_df = pd.concat([test_df, temp],axis = 1).reindex(temp.index)
   print('Trading Strategy:')
   final_return, max_draw_down, avg_win, avg_loss, win_rate,cap_list,buy_date,sell_date = backtesting(BT_df, stop = config['active_stop_loss'])
