@@ -1,7 +1,9 @@
 
 
 def backtesting(df, initial_cap = 10000, reinvest = True, stop = False ,stop_loss = -0.05):
-  df['Close'] = df[df.columns[0]]
+  print("Backtesting Results:")
+  print(df.head())
+  # df['Close'] = df[df.columns[0]]
   temp_cap = 0
   peak = 0
   max_cap = 0
