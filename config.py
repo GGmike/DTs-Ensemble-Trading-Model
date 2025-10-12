@@ -2,6 +2,7 @@
 import datetime
 
 config = {
+    'limit': 1000000,
     'max_depth': 2,
     'rf_depth': 3,
     'rf_n_est': 10000,
