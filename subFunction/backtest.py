@@ -72,6 +72,7 @@ def backtesting(df, initial_cap = 10000, reinvest = True, stop = False ,stop_los
         bought = True
         buy_count+=1
         buy_date.append(df.index[i])
+        # buy_date.append(df['open_time'].iloc[i])
         cash_list.append(cap)
         #amount = cap/df['Close'].iloc[i]
         #cash_list.append(cap)
