@@ -24,6 +24,25 @@ def main():
 #   dataset = yf.download(config['symbol'],config['start'],config['end'],interval = config['period'])
 
   dataset = get_historical_data(config['symbol'],config['period'])
+#   dataset = dataset.set_index('open_time')
+  print("Data fetched successfully.")
+  print("Data Head:")
+  print(dataset.head())
+  print("Data Tail:")
+  print(dataset.tail())
+  print("Data Info:")
+  print(dataset.info())
+  print("Data Description:")
+  print(dataset.describe())
+
+  print("Finding any duplicate timestamps...")
+  has_duplicates = dataset['open_time'].duplicated().any()
+  print(f"Column contains duplicates: {has_duplicates}")
+  duplicate_count = dataset['open_time'].duplicated().sum()
+  print(f"Number of duplicate values: {duplicate_count}")
+  duplicate_values = dataset[dataset['open_time'].duplicated()]['open_time'].unique()
+  print(f"Duplicate values: {duplicate_values}")
+#   dataset.index = dataset.open_time
 #   dataset['Close'].reindex(dataset.index)
 
 
@@ -137,48 +156,10 @@ def main():
   used_columns = []
   timer_start = time.time()
 
-  X_train, X_test, y_train, y_test = train_test_split(X, y,test_size=0.2,shuffle = False) #random_state= SEED)#shuffle = False)
+  X_train, X_test, y_train, y_test = train_test_split(X, y,test_size=0.2,shuffle = False) 
 
   base_learners, used_columns = uniqueDT(cluster1_column,cal_nCr(len(cluster1_column),num_of_nodes) , num_of_nodes, X_train,y_train)
 
-##old approach
-  # if len(used_columns) == 0:
-
-  #   base_learners = []
-  #   used_columns = []
-  #   dup = False
-
-  #   loop = 500
-  #   # print(f"Total distinct decision trees: {loop}")
-  #   success = 0
-
-
-  #   sample_df = cluster1_df
-
-
-  #   while success < loop:
-  #     dup = False
-  #     training_columns = random.sample(list(sample_df.columns), num_of_nodes)
-
-  #     for used_col in used_columns:
-  #       if ck_dup_list(training_columns,used_col) == True:
-  #         dup = True
-  #         break
-  #     if dup == False:
-  #       success += 1
-  #       X_sample = X_train[training_columns]
-  #       y_sample = y_train
-
-
-  #       dt = DecisionTreeClassifier(max_depth=config['max_depth'])
-  #       dt.fit(X_sample, y_sample)
-  #       #print('no dup: ')
-  #       base_learners.append(dt)
-  #       used_columns.append(training_columns)
-  #       # print(success)
-
-  # print('Trees Building Over')
-  # print('Running Prediction')
   base_learner_preds = [dt.predict(X_test[col]) for dt , col in zip(base_learners, used_columns)]
 
   stacked_preds = np.stack(base_learner_preds, axis=-1)
@@ -220,6 +201,7 @@ def main():
 
 #   test_df = yf.download(config['symbol'],config['start'],config['end'],interval = config['period'])
   test_df = get_historical_data(config['symbol'],config['period'])
+  test_df = test_df.set_index('open_time')
   BT_df = pd.concat([test_df, temp],axis = 1).reindex(temp.index)
   print('Trading Strategy:')
   final_return, max_draw_down, avg_win, avg_loss, win_rate,cap_list,buy_date,sell_date = backtesting(BT_df, stop = config['active_stop_loss'])

@@ -9,20 +9,24 @@ BASE_URL = binanceConfig.config['base_url']
 endpoint = binanceConfig.config['endpoint']
 
 
+start_date = datetime.now() - timedelta(days=500)
+start_timestamp = int(start_date.timestamp() * 1000)
+
+today_date = datetime.now()
+end_timestamp = int(today_date.timestamp() * 1000)
+
 def get_historical_data(symbol, interval):
 
     url = BASE_URL + endpoint
     params = {
         'symbol': symbol,
         'interval': interval,
-        'limit': 1000 
+        'limit': 1000 ,
+        'startTime': start_timestamp,
+        'endTime': end_timestamp
     }
     
     all_data_responses = []
-    current_start = None
-
-    if params.get('endTime') is None:
-        params['endTime'] = int(datetime.now().timestamp() * 1000)
 
     while True:
 
@@ -41,20 +45,18 @@ def get_historical_data(symbol, interval):
 
         all_data_responses.extend(data)
         
-        if len(data) < params['limit']:
+        # if len(data) < params['limit']:
+        #     break
+
+        last_open_time = data[-1][0]
+        params['startTime'] = last_open_time + 1
+
+        if last_open_time >= params['endTime']:
             break
 
-        current_start = data[0][0] - 1
-
-        params['startTime'] = current_start
-        
-
-        if current_start >= params['endTime']:
-            break
-
-        if len(all_data_responses) >= config['limit']:
-            print(f"Warning: Reached {config['limit']} records, stopping to avoid excessive data.")
-            break
+        # if len(all_data_responses) >= config['limit']:
+        #     print(f"Warning: Reached {config['limit']} records, stopping to avoid excessive data.")
+        #     break
         
         print(f"Added {len(data)} records, total so far: {len(all_data_responses)}")
         
@@ -75,9 +77,6 @@ def get_historical_data(symbol, interval):
 
         print(f"Final dataframe shape: {df.shape}")
         print(df.head())
-        print(df.tail())
-        print(df.dtypes)
-        print(df.index)
         return df
     else:
         print("No data retrieved.")

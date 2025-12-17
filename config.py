@@ -5,8 +5,8 @@ config = {
     'limit': 1000000,
     'max_depth': 2,
     'rf_depth': 3,
-    'rf_n_est': 10000,
-    'symbol' : "TSLA",
+    'rf_n_est': 100000,
+    'symbol' : "SOLUSDT",
     'start' : datetime.datetime.today().replace(hour=0,minute=0,second =0, microsecond =0)- datetime.timedelta(days=59),
     'end' : datetime.datetime.today().replace(hour=0,minute=0,second =0, microsecond =0),
     'period' : "1D",
@@ -22,7 +22,7 @@ config = {
     'macd_2' : 26,
     'macd_3' : 9,
     'rsi_short': 3,
-    'rsi_long': 10, #14
+    'rsi_long': 12, #14
     'cloud_conversion': 9,
     'cloud_base': 26,
     'cloud_span_b': 52,
