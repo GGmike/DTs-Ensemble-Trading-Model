@@ -57,3 +57,6 @@ venv.bak/
 
 BinanceDataSrc/binanceConfig.py
 congress/
+__pycache__/
+subFunctions/__pycache__/*
+subFunction/__pycache__/
